@@ -41,6 +41,11 @@ public class CampServiceImpl implements CampService{
 		map.put("endPage", endPage);
 		return map;
 	}
+
+	@Override
+	public CampVO campDetailData(int cno) {
+		return cDao.campDetailData(cno);
+	}
 	
 
 }

@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.*;
+
 import com.sist.web.service.*;
 import com.sist.web.vo.*;
 @Controller
@@ -25,5 +26,11 @@ public class CampController {
 		model.addAttribute("main_html","camp/list");
 		return "main";
 	}
-	
+	@GetMapping("/camp/detail")
+	public String camp_detail(@RequestParam("cno") int cno,Model model) {
+		CampVO vo=service.campDetailData(cno);
+		model.addAttribute("vo",vo);
+		model.addAttribute("main_html","camp/detail");
+		return "main";
+	}
 }

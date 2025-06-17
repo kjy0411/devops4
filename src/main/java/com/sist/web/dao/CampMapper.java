@@ -7,4 +7,5 @@ import com.sist.web.vo.*;
 public interface CampMapper {
 	public List<CampVO> campListData(Map map);
 	public int campTotalPage();
+	public CampVO campDetailData(int cno);
 }
