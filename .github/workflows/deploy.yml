@@ -49,18 +49,24 @@ jobs:
 
       - name: Copy Docker image to server
         run: |
-          scp spring-app.tar ubuntu@${{ vars.IP_ADDRESS }}:~/spring-app.tar
+          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" build/libs/*.jar ubuntu@${{ vars.IP_ADDRESS }}:~/app
 
       - name: Load and run Docker image on server
         run: |
           ssh ubuntu@${{ vars.IP_ADDRESS }} << 'EOF'
-            cd ~/app || git clone https://github.com/kjy0411/devops4.git ~/app
+            if [ ! -d ~/app/.git ]; then
+              rm -rf ~/app
+              git clone https://github.com/kjy0411/devops4.git ~/app
+            else
+              cd ~/app && git pull origin main
+            fi
             cd ~/app
             git pull origin main
+            chmod +x ./gradlew
             ./gradlew build
-            docker build -t spring-app:latest
-            docker stop spring-app || true
-            docker rm spring-app || true
-            docker load -i spring-app.tar
-            docker run -d --name spring-app -p 8080:8080 spring-app:latest
+            sudo docker build -t spring-app:latest .
+            sudo docker stop spring-app || true
+            sudo docker rm spring-app || true
+            sudo docker load -i spring-app.tar
+            sudo docker run -d --name spring-app -p 8080:8080 spring-app:latest
           EOF
